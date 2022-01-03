@@ -8,6 +8,7 @@ public class QuartzProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(QuartzProjectApplication.class, args);
+//		git test
 	}
 
 }
