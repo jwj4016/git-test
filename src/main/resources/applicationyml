@@ -19,7 +19,21 @@ spring:
       ddl-auto: update
   quartz:
     job-store-type: jdbc
-  
+    jdbc:
+      initialize-schema: always
+    jobStore:
+      driver-delegate-class: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+#    auto-startup: true
+   
+    
+      
+    
+mybatis: # type을 쉽게 쓰기 위해서 dto 패키지를 type-aliaes에 설정
+  type-aliases-package: com.quartz.project.domain
+  mapper-locations: sql/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
     
 server:
   port: 8088

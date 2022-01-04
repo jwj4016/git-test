@@ -6,7 +6,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
+public class SampleJob extends QuartzJobBean implements InterruptableJob{
 
 	@Override
 	public void interrupt() throws UnableToInterruptJobException {
@@ -17,7 +17,7 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		// TODO 실행할 job logic 구현.
-//		System.out.println("테스트 수행 중입니다.");
+		System.out.println("샘플잡 테스트 수행중.");
 		//1.검색어를 받아서 해당 검색어로 url 구성.
 		//2.url 크롤링 시작.
 		//3.크롤링 한 데이터 파싱.
