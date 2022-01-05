@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class ScheduleVO {
 	private String scheduleNo;
+	//searchKeyword, productId 포함.
 	private JobDataMap jobDataMap;
 	
 	private String schedName;
