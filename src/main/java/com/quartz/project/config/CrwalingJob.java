@@ -84,6 +84,7 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 						log.debug("상품ID = " + temp.get("product_count").toString());
 						log.debug("상품명 = " + temp.get("product_name").toString());
 						log.debug("수량 = " + temp.get("quantity").toString());
+						//해당 상품의 수량이 0보다 크기 때문에 메일을 발송한다.
 					}
 				}
 			}
@@ -93,13 +94,6 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-
-		//2.url 크롤링 시작.
-		//3.크롤링 한 데이터 파싱.
-		//4.파싱한 데이터 저장.
-		//5.원하는 결과일 경우 메일 보내기
 	}
 
 }
