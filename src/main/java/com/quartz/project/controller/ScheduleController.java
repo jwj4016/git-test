@@ -71,16 +71,6 @@ public class ScheduleController {
 		return null;
 	}
 	
-	@ResponseBody
-	@GetMapping("/getScheduleList")
-	public Map<String, Object> getScheduleList() throws SchedulerException, Exception {
-		Map<String, Object> result = new HashMap<String, Object>();
-		
-		List<ScheduleVO> list = scheduleService.srvSelectSchdulList();
-		result.put("key", list);
-		return result;
-	}
-	
 	@GetMapping("/deleteScheulde")
 	public String deleteSchedule(@ModelAttribute ScheduleVO scheduleVO) throws SchedulerException, Exception {
 		scheduleService.srvDeleteSchedule(scheduleVO);
