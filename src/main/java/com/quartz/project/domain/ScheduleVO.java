@@ -13,7 +13,6 @@ public class ScheduleVO {
 	private String scheduleNo;
 	//searchKeyword, productId 포함.
 	private String searchKeyword;
-	private String productId;
 	private List<String> productIdList;
 	
 	private JobDataMap jobDataMap;
@@ -59,7 +58,6 @@ public class ScheduleVO {
 	public JobDataMap getJobDataMap() {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("searchKeyword", this.searchKeyword);
-		jobDataMap.put("productId", this.productId);
 		jobDataMap.put("productIdList", this.productIdList);
 		return jobDataMap;
 	}

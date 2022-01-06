@@ -1,24 +1,26 @@
 package com.quartz.project.quartzitems.job;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
 import org.quartz.UnableToInterruptJobException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quartz.project.domain.ScheduleVO;
 import com.quartz.project.service.MailService;
+import com.quartz.project.service.schedule.ScheduleService;
 import com.quartz.project.util.SSLUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 
 	@Autowired
 	MailService mailService;
+	@Autowired
+	ScheduleService scheduleService;
 	
 	@Override
 	public void interrupt() throws UnableToInterruptJobException {
@@ -41,7 +45,8 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 		SSLUtil.ignoreSSL();
 		
 		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-		
+		List<String> productIdList = new ArrayList<String>();
+		productIdList = (List<String>) jobDataMap.get("productIdList");
 //		String homeURL = "https://www.ddakpet.com";
 //		Response response;
 		try {
@@ -83,30 +88,49 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 //				}
 //			});
 			
+			//상품이 있는지 확인하는 flag.
+			Boolean isExistent  = false;
 			//list에는 각각의 상품정보가 map형태로 담겨있다.
 			Map<?, ?> temp = null;
 			for(int i=0; i<list.size(); i++) {
 				//임시 map에 상품정보 하나를 담는다.
 				temp = (Map) list.get(i); 
-				if(jobDataMap.get("productId").toString().equals(temp.get("product_count").toString()) ) {
+				if(productIdList.contains(temp.get("product_count").toString()) ) {
 					//임시 map에 담긴 상품코드와 jobDataMap에 등록된 상품코드가 일치.
 					if((int)temp.get("quantity") > 0) {
 						//해당 상품의 수량이 0보다 크다.
-						log.debug("상품ID = " + temp.get("product_count").toString());
-						log.debug("상품명 = " + temp.get("product_name").toString());
-						log.debug("수량 = " + temp.get("quantity").toString());
+						log.info("상품ID = " + temp.get("product_count").toString());
+						log.info("상품명 = " + temp.get("product_name").toString());
+						log.info("수량 = " + temp.get("quantity").toString());
 						//해당 상품의 수량이 0보다 크기 때문에 메일을 발송한다.
-//						mailService.srvSendMail(null);
+//						mai	lService.srvSendMail(null);
+						//메일 보내고 나면 해당 잡 삭제해야될듯
+						isExistent = true;
 					}else {
-						log.debug("상품ID = " + temp.get("product_count").toString());
-						log.debug("상품명 = " + temp.get("product_name").toString());
-						log.debug("수량 = " + temp.get("quantity").toString());
+						log.info("상품ID = " + temp.get("product_count").toString());
+						log.info("상품명 = " + temp.get("product_name").toString());
+						log.info("수량 = " + temp.get("quantity").toString());
 					}
 				}
+			}
+			//검색어에 해당하는 상품 중 quantity가 0보다 큰것이 있을 경우.
+			if(isExistent) {
+				//해당 잡 삭제
+				ScheduleVO scheduleVO = new ScheduleVO();
+				scheduleVO.setJobName(context.getJobDetail().getKey().getName());
+				scheduleVO.setJobGroup(context.getJobDetail().getKey().getGroup());
+				
+				scheduleService.srvDeleteSchedule(scheduleVO);
 			}
 			
 			
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
