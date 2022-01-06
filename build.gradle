@@ -56,6 +56,9 @@ dependencies {
 	implementation 'javax.servlet:jstl'
 	
 	implementation 'org.jsoup:jsoup:1.14.3'
+	
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 }
 
 task setUp(type: NpmTask){
