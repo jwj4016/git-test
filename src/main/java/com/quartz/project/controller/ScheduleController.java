@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,8 +1,10 @@
 package com.quartz.project.domain;
 
 
+
+import java.util.List;
+
 import org.quartz.JobDataMap;
-import org.springframework.util.StringUtils;
 
 import lombok.Data;
 
@@ -10,6 +12,10 @@ import lombok.Data;
 public class ScheduleVO {
 	private String scheduleNo;
 	//searchKeyword, productId 포함.
+	private String searchKeyword;
+	private String productId;
+	private List<String> productIdList;
+	
 	private JobDataMap jobDataMap;
 	
 	private String jobClassName;
@@ -49,6 +55,14 @@ public class ScheduleVO {
 	
 	/** 실행일정초 TN_schedule */
 	private String executScheduleSecond;
+	
+	public JobDataMap getJobDataMap() {
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("searchKeyword", this.searchKeyword);
+		jobDataMap.put("productId", this.productId);
+		jobDataMap.put("productIdList", this.productIdList);
+		return jobDataMap;
+	}
 	
 //	public String getCronExpression()
 //	{

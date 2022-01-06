@@ -24,7 +24,7 @@ public class ScheduleService {
 	private Scheduler scheduler;
 	@Autowired
 	private ScheduleMapper scheduleMapper;
-	private final String PACKAGE_ROOT = "com.quartz.project.config.";
+	private final String PACKAGE_ROOT = "com.quartz.project.quartzitems.job.";
 	
 	/**
 	 * 스케줄러 시작 메소드
@@ -126,9 +126,10 @@ public class ScheduleService {
 		 * STEP2. cronTrigger object 생성.
 		 */
 		cronTrigger = TriggerBuilder.newTrigger()
-			    .withIdentity(scheduleVO.getTriggerName(),scheduleVO.getTriggerGroup())
+			    .withIdentity(scheduleVO.getJobName(),scheduleVO.getJobGroup())
+//			    .withIdentity(scheduleVO.getTriggerName(),scheduleVO.getTriggerGroup())
 			    .withSchedule(cronSchedule(scheduleVO.getCronExpression()))
-			    .forJob(scheduleVO.getScheduleNo())
+			    .forJob(scheduleVO.getJobName(),scheduleVO.getJobGroup())
 			    .build();
 		
 		

@@ -88,8 +88,8 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 			for(int i=0; i<list.size(); i++) {
 				//임시 map에 상품정보 하나를 담는다.
 				temp = (Map) list.get(i); 
-				if(jobDataMap.get("productId").toString().equals(temp.get("product_count")) ) {
-					//임시 map에 담긴 상품코드와 jobdatampa에 등록된 상품코드가 일치.
+				if(jobDataMap.get("productId").toString().equals(temp.get("product_count").toString()) ) {
+					//임시 map에 담긴 상품코드와 jobDataMap에 등록된 상품코드가 일치.
 					if((int)temp.get("quantity") > 0) {
 						//해당 상품의 수량이 0보다 크다.
 						log.debug("상품ID = " + temp.get("product_count").toString());
@@ -97,6 +97,10 @@ public class CrwalingJob extends QuartzJobBean implements InterruptableJob{
 						log.debug("수량 = " + temp.get("quantity").toString());
 						//해당 상품의 수량이 0보다 크기 때문에 메일을 발송한다.
 //						mailService.srvSendMail(null);
+					}else {
+						log.debug("상품ID = " + temp.get("product_count").toString());
+						log.debug("상품명 = " + temp.get("product_name").toString());
+						log.debug("수량 = " + temp.get("quantity").toString());
 					}
 				}
 			}
