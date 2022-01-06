@@ -1,4 +1,4 @@
-package com.quartz.project.config;
+package com.quartz.project.quartzitems.job;
 
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;

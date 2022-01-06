@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.quartz.project.config.CrwalingJob;
 import com.quartz.project.domain.ScheduleVO;
+import com.quartz.project.quartzitems.job.CrwalingJob;
+import com.quartz.project.quartzitems.joblistener.QuartzJobListener;
 import com.quartz.project.service.schedule.ScheduleService;
-import com.quartz.project.util.QuartzJobListener;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +48,8 @@ public class ScheduleController {
 	@GetMapping("/insertSchedule")
 	public String insertSchedule(@ModelAttribute ScheduleVO scheduleVO) throws SchedulerException, Exception {
 		//job object 를 넘길지 job 이름만 넘길지 고민...
+		//job object를 클라이언트 측에서 넘기는 방법 고민.
+		//job object를 클라이언트에서 넘기기 힘들기 때문에 일단 job이름만 넘기기.
 		//1.job object로 넘기기
 //		Class<Job> myJob = (Class<Job>) Class.forName(scheduleVO.getJobName());
 //		scheduleService.srvInsertSchedule(scheduleVO, myJob);

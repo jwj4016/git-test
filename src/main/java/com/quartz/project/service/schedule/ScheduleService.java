@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
-import com.quartz.project.config.CrwalingJob;
 import com.quartz.project.domain.ScheduleVO;
 import com.quartz.project.repository.ScheduleMapper;
 
@@ -28,7 +27,8 @@ public class ScheduleService {
 	private final String PACKAGE_ROOT = "com.quartz.project.config.";
 	
 	/**
-	 * 스케줄러 시작 메소드.
+	 * 스케줄러 시작 메소드
+	 * @param job
 	 * @throws SchedulerException
 	 * @throws Exception
 	 */
@@ -60,8 +60,9 @@ public class ScheduleService {
 	}
 	
 	/**
-	 * 스케줄을 스케줄러에 등록하는 메소드.
-	 * @param scheduleVO
+	 * 
+	 * @param scheduleVO(String jobName, String jobGroup, String description, JobDataMap jobDataMap)
+	 * @param job(org.quartz.Job) - Job interface 구현체를 직접 전달.
 	 * @throws SchedulerException
 	 * @throws Exception
 	 */
@@ -73,16 +74,17 @@ public class ScheduleService {
 		 * STEP1. jobDetail object 생성.
 		 */
 		jobDetail = JobBuilder.newJob(job)
-				.withIdentity(scheduleVO.getScheduleNo())
+				.withIdentity(scheduleVO.getJobName(),scheduleVO.getJobGroup())
+				.withDescription(scheduleVO.getDescription())
 				.storeDurably()
-//                .usingJobData(scheduleVO.getJobDataMap())
+                .usingJobData(scheduleVO.getJobDataMap())
 				.build();	
 		
 		/**
 		 * STEP2. cronTrigger object 생성.
 		 */
 		cronTrigger = TriggerBuilder.newTrigger()
-			    .withIdentity(scheduleVO.getScheduleNo())
+				.withIdentity(scheduleVO.getTriggerName(),scheduleVO.getTriggerGroup())
 			    .withSchedule(cronSchedule(scheduleVO.getCronExpression()))
 			    .forJob(scheduleVO.getScheduleNo())
 			    .build();
@@ -94,27 +96,37 @@ public class ScheduleService {
 		scheduler.scheduleJob(jobDetail, cronTrigger);
 	}
 	
+	/**
+	 * 
+	 * @param scheduleVO(String jobName, String jobGroup, String description, 
+	 *        JobDataMap jobDataMap, String jobClassName)
+	 *        -jobclassName은 org.quartz.job 인터페이스를 구현한 구현체의 클래스명.
+	 * 
+	 * @throws SchedulerException
+	 * @throws Exception
+	 */
 	public void srvInsertSchedule(ScheduleVO scheduleVO) throws SchedulerException, Exception{
 		JobDetail jobDetail;
 		CronTrigger cronTrigger;
 		
 		
-		Class<Job> myJob = (Class<Job>) Class.forName(PACKAGE_ROOT+scheduleVO.getJobName());
+		Class<Job> myJob = (Class<Job>) Class.forName(PACKAGE_ROOT+scheduleVO.getJobClassName());
 		
 		/**
 		 * STEP1. jobDetail object 생성.
 		 */
 		jobDetail = JobBuilder.newJob(myJob)
-				.withIdentity(scheduleVO.getScheduleNo())
+				.withIdentity(scheduleVO.getJobName(),scheduleVO.getJobGroup())
+				.withDescription(scheduleVO.getDescription())
 				.storeDurably()
-//                .usingJobData(scheduleVO.getJobDataMap())
+                .usingJobData(scheduleVO.getJobDataMap())
 				.build();	
 		
 		/**
 		 * STEP2. cronTrigger object 생성.
 		 */
 		cronTrigger = TriggerBuilder.newTrigger()
-			    .withIdentity(scheduleVO.getScheduleNo())
+			    .withIdentity(scheduleVO.getTriggerName(),scheduleVO.getTriggerGroup())
 			    .withSchedule(cronSchedule(scheduleVO.getCronExpression()))
 			    .forJob(scheduleVO.getScheduleNo())
 			    .build();
@@ -128,22 +140,38 @@ public class ScheduleService {
 	
 	/**
 	 * JobListener 등록 메서드
-	 * @param scheduleVO
+	 * @param scheduleVO(String jobName, String jobGroup)
 	 * @param jobListener
 	 * @throws Exception
 	 */
 	public void srvAddJobListener(ScheduleVO scheduleVO, JobListener jobListener) throws SchedulerException,Exception{
 		//job identity(jobKey)에 해당하는 job에 jobListener를 연결한다. 
-		JobKey jobKey = new JobKey(scheduleVO.getScheduleNo());
+//		JobKey jobKey = new JobKey(scheduleVO.getScheduleNo());
+		JobKey jobKey = new JobKey(scheduleVO.getJobName(), scheduleVO.getJobGroup());
 		scheduler.getListenerManager().addJobListener(jobListener, KeyMatcher.keyEquals(jobKey));
 	}
 	
+	
+	/**
+	 * jobName과 jobGroup에 해당하는 job 삭제(trigger도 job과 함께 삭제.)
+	 * @param scheduleVO(String jobName, String jobGroup)
+	 * @throws SchedulerException
+	 * @throws Exception
+	 */
 	public void srvDeleteSchedule(ScheduleVO scheduleVO) throws SchedulerException,Exception {
-		scheduler.deleteJob(JobKey.jobKey(scheduleVO.getScheduleNo()));
+//		scheduler.deleteJob(JobKey.jobKey(scheduleVO.getScheduleNo()));
+		scheduler.deleteJob(JobKey.jobKey(scheduleVO.getJobName(), scheduleVO.getJobGroup()));
 	}
 	
+	/**
+	 * job(trigger포함) 삭제 후, 등록하는 메서드.
+	 * @param scheduleVO
+	 * @throws SchedulerException
+	 * @throws Exception
+	 */
 	public void srvUpdateSchedule(ScheduleVO scheduleVO) throws SchedulerException,Exception {
 		srvDeleteSchedule(scheduleVO);
+		
 //		srvInsertSchedule(scheduleVO, new CrwalingJob());
 		srvInsertSchedule(scheduleVO);
 	}

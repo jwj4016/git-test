@@ -12,6 +12,7 @@ public class ScheduleVO {
 	//searchKeyword, productId 포함.
 	private JobDataMap jobDataMap;
 	
+	private String jobClassName;
 	private String schedName;
 	private String triggerName;
 	private String triggerGroup;
