@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.quartz.project.repository.ProductInfoMapper">
+    <insert id="insertProductInfo" parameterType="ProductInfoVO">
+    	INSERT INTO PRODUCT_INFO
+    		(PRODUCT_CODE
+    	   , CATEGORY_NAME1
+    	   , CATEGORY_NAME2
+    	   , CATEGORY_NAME3
+    	   , SCORE
+    	   , SALE_COUNT
+    	   , MIN_PRICE_INFO
+    	   , QUANTITY
+    	   , BRAND_NAME
+    	   , PRODUCT_NAME
+    	   , WRITE_TIME
+    	   , MAIN_SHOP_ID
+    	   , REGIST_DATE
+    	   , UPDATE_DATE
+    	   , DELETE_DATE
+    	   , STATUS
+    	   ) 
+    	VALUES 
+	        (#{productCode}
+	       , #{categoryName1}
+	       , #{categoryName2}
+	       , #{categoryName3}
+	       , #{score}
+	       , #{saleCount}
+	       , #{minPriceInfo}
+	       , #{quantity}
+	       , #{brandName}
+	       , #{productName}
+	       , #{writeTime}
+	       , #{mainShopId}
+	       , now()
+	       , #{updateDate}
+	       , #{deleteDate}
+	       , #{status}
+    	   );
+    </insert>
+    
+    <select id="selectProductInfoList" parameterType="ProductInfoVO">
+    	SELECT 
+    		* 
+    	FROM 
+    		PRODUCT_INFO
+    	<where>
+    		<if test="productCode != null and productCode != ''">
+ 			AND UPPER(PRODUCT_CODE) LIKE UPPER('%#{productCode}%')
+    		</if>
+    		<if test="productName != null and productName != ''">
+   			AND UPPER(PRODUCT_NAME) LIKE UPPER('%#{productName}%')
+    		</if>
+    		<if test="(searchRegistDateStart != null and searchRegistDateStart != '') 
+    			  AND (searchRegistDateEnd != null and searchRegistDateEnd != '')">
+    		AND REGIST_DATE BETWEEN TO_TIMESTAMP('#{searchRegistDateStart}', 'YYYY-MM-DD HH24:MI:SS')  
+								AND TO_TIMESTAMP('#{searchRegistDateEnd}', 'YYYY-MM-DD HH24:MI:SS')
+			</if>
+    	</where>
+    </select>
+    
+
+</mapper>

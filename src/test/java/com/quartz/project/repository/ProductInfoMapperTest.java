@@ -1,20 +1,29 @@
-package com.quartz.project;
+package com.quartz.project.repository;
 
+import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.quartz.project.domain.ProductInfoVO;
-import com.quartz.project.service.ProductInfoService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class TestUtil {
-	public static void main(String[] args) throws IOException {
-		System.out.println("test start");
-		ProductInfoService productInfoService = new ProductInfoService();
-		ProductInfoVO pdiVo = new ProductInfoVO();
+@RunWith(SpringRunner.class)
+public class ProductInfoMapperTest {
+	@Autowired
+	private ProductInfoMapper productInfoMapper;
+	
+	private ProductInfoVO pdiVo;
+
+	@Before
+	public void setUp() {
+		pdiVo = new ProductInfoVO();
 		pdiVo.setProductCode("testCode");
 		pdiVo.setCategoryName1("category1");
 		pdiVo.setCategoryName2("category2");
@@ -31,11 +40,16 @@ public class TestUtil {
 		pdiVo.setUpdateDate(LocalDateTime.now());
 		pdiVo.setDeleteDate(LocalDateTime.now());
 		pdiVo.setStatus("status code");
-		
-		
-		productInfoService.srvInsertProductInfo(pdiVo);
+	}
+	@Test
+	public void testInsertProductInfo() {
+		System.out.println("test start");
+		productInfoMapper.insertProductInfo(pdiVo);
 		System.out.println("test completed");
 		
+		
+		
+		fail("Not yet implemented");
 	}
 
 }

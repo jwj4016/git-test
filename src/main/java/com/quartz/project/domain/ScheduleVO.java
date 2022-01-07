@@ -11,9 +11,9 @@ import lombok.Data;
 @Data
 public class ScheduleVO {
 	private String scheduleNo;
-	//searchKeyword, productId 포함.
+	//searchKeyword, productCodeList 포함.
 	private String searchKeyword;
-	private List<String> productIdList;
+	private List<String> productCodeList;
 	
 	private JobDataMap jobDataMap;
 	
@@ -58,7 +58,7 @@ public class ScheduleVO {
 	public JobDataMap getJobDataMap() {
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("searchKeyword", this.searchKeyword);
-		jobDataMap.put("productIdList", this.productIdList);
+		jobDataMap.put("productCodeList", this.productCodeList);
 		return jobDataMap;
 	}
 	
